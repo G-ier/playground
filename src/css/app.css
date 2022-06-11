@@ -1,0 +1,11 @@
+/* app global css */
+@font-face {
+    font-family: popreg;
+    src: url(../assets/Poppins-Regular.ttf);
+}
+.popreg{
+    font-family: popreg;
+}
+.text-smol{
+    font-size: 1rem;
+}
