@@ -5,7 +5,9 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('src/pages/IndexPage.vue') },
-      { path: 'spiderweb', component: () => import('pages/Spider.vue') }
+      { path: 'spiderweb', component: () => import('pages/Spider.vue') },
+      { path: 'balken', component: () => import('pages/Balken.vue') },
+      { path: 'bubble', component: () => import('pages/Bubble.vue') }
     ]
   },
 

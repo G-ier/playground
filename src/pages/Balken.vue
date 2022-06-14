@@ -135,7 +135,7 @@
       <div class="text-h5 q-mb-xl popreg">
         Visualisierung
       </div>
-      <SpiderWeb :key="componentKey"/>
+      <BalkenDiagramm :key="componentKey"/>
     </div>
     <q-dialog
       v-model="code"
@@ -158,41 +158,32 @@
               Highcharts.chart( String("{{store.divName}}"), {
 
                 chart: {
-                    polar: {{store.chart.polar}},
                     type: '{{store.chart.type}}'
                 },
 
                 title: {
-                    text: '{{store.title.text}}',
-                    x: {{store.title.x}}
-                },
-
-                pane: {
-                    size: '{{store.pane.size}}'
+                    text: '{{store.title.text}}'
                 },
 
                 xAxis: {
-                    categories: {{store.xAxis.categories}},
-                    tickmarkPlacement: '{{store.xAxis.tickmarkPlacement}}',
-                    lineWidth: {{store.xAxis.lineWidth}}
+                    categories: {{store.xAxis.categories}}
                 },
 
                 yAxis: {
-                    gridLineInterpolation: '{{store.yAxis.gridLineInterpolation}}',
-                    lineWidth: {{store.yAxis.lineWidth}},
-                    min: {{store.yAxis.min}}
+                    min: {{store.yAxis.min}},
+                    title: {
+                        text: '{{yAxis.title.text}}'
+                    }
                 },
 
-                tooltip: {
-                    shared: {{store.tooltip.shared}},
-                    pointFormat: '{{store.tooltip.pointFormat}}'
-                },
+                legend = {
+                    reversed: '{{legend.reversed}}'
+                }
 
-                legend: {
-                    align: '{{store.legend.align}}',
-                    verticalAlign: '{{store.legend.verticalAlign}}',
-                    y: {{store.legend.y}},
-                    layout: '{{store.legend.layout}}'
+                plotOptions = {
+                    series: {
+                        stacking: {{plotOptions.series.stacking}}
+                    }
                 },
 
                 series: {{store.series}}
@@ -214,42 +205,42 @@
 import { defineComponent } from 'vue'
 import {ref} from 'vue'
 import {uid} from 'quasar'
-import SpiderWeb from '../components/Spiderweb.vue'
+import BalkenDiagramm from '../components/BalkenDiagramm.vue'
 import { useQuasar } from 'quasar'
-import {useMainStore} from '../stores/mainstore'
+import {useBalkenStore} from '../stores/balkenstore'
 import {mapWritableState, mapState } from 'pinia'
 
 const columns = [
   { name: 'desc', style: 'min-width: 160px; width: 160px', align: 'left', label: 'Name', field: 'name' },
-  { name: 'comment', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Einträge (mit Kommas getrennt)', field: 'comment' },
-  { name: 'calories', align: 'center', label: 'Point placement (default: on)', field: 'point' },
+  { name: 'comment', style: 'min-width: 200px; width: 300px', align: 'left', label: 'Einträge (mit Kommas, ohne Leerzeichnen)', field: 'comment' },
 ]
 
 var rows = [
   {
-      name: 'Allocated Budget',
-
-      comment: "43000,19000,60000,35000,17000,10000",
-      point: "on"
-  }, {
-      name: 'Actual Spending',
-      comment: "50000,39000,42000,31000,26000,14000",
-      point: "on"
-  }
+        name: 'John',
+        comment: "5,3,4,7,2"
+    }, {
+        name: 'Jane',
+        comment: "2,2,3,2,1"
+    }, {
+        name: 'Joe',
+        comment: "3,4,4,2,5"
+    }
 ]
-const store = useMainStore()
+const store = useBalkenStore()
 const $q = useQuasar()
 export default defineComponent({
-  name: 'SpiderPage',
+  name: 'BalkenPage',
   components: {
-    SpiderWeb
+    BalkenDiagramm
   },
   setup(){
     const $q = useQuasar()
-    const store = useMainStore()
+    const store = useBalkenStore()
     return{
       columns,
       store,
+      $q,
       deleteE(name){
         for (let i = 0; i < rows.length; i++) {
           if(rows[i].name == name){
@@ -264,7 +255,6 @@ export default defineComponent({
           rows.push({
             name: this.newName,
             comment: this.newList,
-            point: 'on'
           })
           this.newName = null;
           this.newList = null;
@@ -285,14 +275,15 @@ export default defineComponent({
     visualize(){
         this.series = []
         for(let i = 0; i < rows.length; i++){
+
           try{
             this.series.push({
               name: this.rows[i].name,
               data: this.rows[i].comment.split(",").map(Number),
-              pointPlacement: this.rows[i].point
             })
+
           } catch (error) {
-            $q.notify({
+            this.$q.notify({
               message: 'Fehler beim Visualisieren - Dateien der Einträge enthalten Non-Numbers',
               color: 'red'
             })
@@ -303,42 +294,34 @@ export default defineComponent({
         store.divName = this.divName;
 
         store.chart = {
-            polar: this.chart.polar,
             type: this.chart.type
         }
 
         store.title = {
-            text: this.title.text,
-            x: this.title.x
-        }
+            text: this.title.text
 
-        store.pane = {
-            size: this.pane.size
         }
 
         store.xAxis = {
-            categories: this.xAxis.categories,
-            tickmarkPlacement: this.xAxis.tickmarkPlacement,
-            lineWidth: this.xAxis.lineWidth
+            categories: this.xAxis.categories
         }
 
         store.yAxis = {
-            gridLineInterpolation: this.yAxis.gridLineInterpolation,
-            lineWidth: this.yAxis.lineWidth,
-            min: this.yAxis.min
-        }
-
-        store.tooltip = {
-            shared: this.tooltip.shared,
-            pointFormat: this.tooltip.pointFormat
+            min: this.yAxis.min,
+            title: {
+                text: this.yAxis.title.text
+            }
         }
 
         store.legend = {
-            align: this.legend.align,
-            verticalAlign: this.legend.verticalAlign,
-            y: this.legend.y,
-            layout: this.legend.layout
+            reversed: this.legend.reversed
         }
+
+        store.plotOptions = {
+            series: {
+                stacking: this.plotOptions.series.stacking
+            }
+        },
 
         store.series = this.series
         this.componentKey = uid()
@@ -349,7 +332,7 @@ export default defineComponent({
   },
   data () {
     return {
-      rows,
+      rows: rows,
       categories: ref(null),
       table: ref(false),
       table2: ref(false),
@@ -357,48 +340,30 @@ export default defineComponent({
       code: false,
       newName: ref(null),
       newList: ref(null),
-       chart: {
-        polar: ref(true),
-        type: ref('line')
-      },
-      title: {
-        text: ref('Budget vs spending'),
-        x: ref(-80)
-      },
-      pane: {
-        size: ref('80%')
-      },
-      xAxis: {
-          categories: ['Sales', 'Marketing', 'Development', 'Customer Support',
-                  'Information Technology', 'Administration'],
-          tickmarkPlacement: ref('on'),
-          lineWidth: ref(0)
-      },
-      yAxis: {
-        gridLineInterpolation: ref('polygon'),
-        lineWidth: ref(0),
-        min: ref(0),
-      },
-      tooltip: {
-        shared: ref(true),
-        pointFormat: ref('<span style="color:{series.color}">{series.name}: <b>${point.y:,.0f}</b><br/>')
-      },
-      legend: {
-        align: ref('right'),
-        verticalAlign: ref('top'),
-        y: ref(70),
-        layout: ref('vertical')
-      },
-      series: [{
-          name: 'Allocated Budget',
-    
-          data: [43000, 19000, 60000, 35000, 17000, 10000],
-          pointPlacement: 'on'
-      }, {
-          name: 'Actual Spending',
-          data: [50000, 39000, 42000, 31000, 26000, 14000],
-          pointPlacement: 'on'
-      }],
+      chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Stacked bar chart'
+        },
+        xAxis: {
+            categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Total fruit consumption'
+            }
+        },
+        legend: {
+            reversed: true
+        },
+        plotOptions: {
+            series: {
+                stacking: 'normal'
+            }
+        },
+        series: [],
       divName: uid(),
       componentKey: 0
     }
