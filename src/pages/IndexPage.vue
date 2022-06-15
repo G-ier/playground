@@ -71,7 +71,7 @@
 <script>
 import { defineComponent } from 'vue'
 import {ref} from 'vue'
-import {uid} from 'quasar'
+import {uid, useQuasar} from 'quasar'
 import SpiderWeb from '../components/Spiderweb.vue'
 
 export default defineComponent({
@@ -83,6 +83,19 @@ export default defineComponent({
       goto(link){
         this.$router.push(link);
       }
+  },
+  setup(){
+    const $q = useQuasar()
+    return {
+        $q
+    }
+  },
+  mounted(){
+    if(this.$q.localStorage.getItem("reloadOther") == 0){
+        location.reload();
+        this.$q.localStorage.set("reloadBalken", 0)
+        this.$q.localStorage.set("reloadOther", 1)
+    }
   }
 })
 </script>

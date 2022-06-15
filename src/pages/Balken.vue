@@ -367,6 +367,9 @@ export default defineComponent({
       divName: uid(),
       componentKey: 0
     }
+  },
+  mounted(){
+    
   }
 })
 </script>

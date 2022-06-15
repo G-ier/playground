@@ -54,22 +54,22 @@
               
                 <template v-slot:body="props">
                   <q-tr :props="props">
-                    <q-td key="x" :props="props">
-                      {{ props.row.x }}
-                      <q-popup-edit v-model="props.row.x" v-slot="scope">
-                        <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
-                      </q-popup-edit>
-                    </q-td>
                     <q-td key="y" :props="props">
                       {{ props.row.y }}
-                      <q-popup-edit v-model="props.row.y" v-slot="scope">
-                        <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+                      <q-popup-edit v-model.number="props.row.y" auto-save v-slot="scope">
+                        <q-input v-model.number="scope.value" dense autofocus @keyup.enter="scope.set" />
+                      </q-popup-edit>
+                    </q-td>
+                    <q-td key="x" :props="props">
+                      {{ props.row.x }}
+                      <q-popup-edit v-model.number="props.row.x" auto-save v-slot="scope">
+                        <q-input v-model.number="scope.value" dense autofocus @keyup.enter="scope.set" />
                       </q-popup-edit>
                     </q-td>
                     <q-td key="z" :props="props">
                       {{ props.row.z }}
-                      <q-popup-edit v-model="props.row.z" v-slot="scope">
-                        <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+                      <q-popup-edit v-model.number="props.row.z" auto-save v-slot="scope">
+                        <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="scope.set" />
                       </q-popup-edit>
                     </q-td>
 
@@ -143,9 +143,9 @@
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-                <q-input dense standout="bg-grey text-white" label="Eigenschaft 1" v-model="newx" autofocus  />
-                <q-input dense standout="bg-grey text-white" class="q-my-sm" label="Eigenschaft 2" v-model="newy" autofocus  />
-                <q-input dense standout="bg-grey text-white" class="q-my-sm" label="Eigenschaft 3" v-model="newz" autofocus  />
+                <q-input dense standout="bg-grey text-white" label="Eigenschaft auf der X Achse" type="number" hint="*Zahl eingeben" v-model="newx" autofocus  />
+                <q-input dense standout="bg-grey text-white" class="q-my-sm" type="number" label="Eigenschaft auf der Y Achse" hint="*Zahl eingeben" v-model="newy" autofocus  />
+                <q-input dense standout="bg-grey text-white" class="q-my-sm" type="number" label="Eigenschaft 3" hint="*Zahl eingeben" v-model="newz" autofocus  />
                 <q-input dense standout="bg-grey text-white" class="q-my-sm" label="Abkürzung" v-model="newName" autofocus  />
                 <q-input dense standout="bg-grey text-white" class="q-my-sm" label="Title" v-model="newCountry" autofocus  />
             </q-card-section>
@@ -243,34 +243,22 @@
             <code class="popreg q-pa-lg bg-grey rounded-borders">
               Highcharts.chart( String("{{store.divName}}"), {
 
-                chart: {
-                    type: '{{store.chart.type}}'
-                },
+                store.chart = {{store.chart}}
 
-                title: {
-                    text: '{{store.title.text}}'
-                },
+                store.title = {{store.title}}
+                store.subtitle = {{store.subtitle}}
 
-                xAxis: {
-                    categories: {{store.xAxis.categories}}
-                },
+                store.accessibility = {{store.accessibility}}
 
-                yAxis: {
-                    min: {{store.yAxis.min}},
-                    title: {
-                        text: '{{yAxis.title.text}}'
-                    }
-                },
+                store.xAxis = {{store.xAxis}}
 
-                legend = {
-                    reversed: '{{legend.reversed}}'
-                }
+                store.yAxis = {{store.yAxis}}
 
-                plotOptions = {
-                    series: {
-                        stacking: {{plotOptions.series.stacking}}
-                    }
-                },
+                store.legend = {{store.legend}}
+
+                store.tooltip = {{store.tooltip}}
+
+                store.plotOptions = {{store.plotOptions}}
 
                 series: {{store.series}}
 
@@ -297,8 +285,8 @@ import {useBubbleStore} from '../stores/bubblestore'
 import {mapWritableState, mapState } from 'pinia'
 
 const columns = [
-  { name: 'x', align: 'left', label: 'Eigenschaft 1', field: 'x' },
-  { name: 'y', align: 'left', label: 'Eigenschaft 2', field: 'y' },
+  { name: 'y', align: 'left', label: 'Eigenschaft 2 (Achse Y)', field: 'y' }, 
+  { name: 'x', align: 'left', label: 'Eigenschaft 1 (Achse X)', field: 'x' },
   { name: 'z', align: 'left', label: 'Eigenschaft 3', field: 'z' },
   { name: 'desc', style: 'min-width: 200px; width: 300px', align: 'left', label: 'Title Abkürzung', field: 'name' },
   { name: 'country', style: 'min-width: 200px; width: 300px', align: 'left', label: 'Title', field: 'country' }
@@ -354,10 +342,6 @@ export default defineComponent({
           this.newx = null;
           this.newy = null;
           this.newz = null;
-          this.tooltip.pointFormat = '<tr><th colspan="2"><h3>{point.country}</h3></th></tr>' +
-                '<tr><th>' + this.eig1 +':</th><td>{point.x}g</td></tr>' +
-                '<tr><th>' + this.eig2 +':</th><td>{point.y}g</td></tr>' +
-                '<tr><th>' + this.eig3 +':</th><td>{point.z}%</td></tr>'
           $q.notify({
             message: 'Eintrag eingefügt',
             color: 'green'
@@ -373,16 +357,20 @@ export default defineComponent({
   },
   methods: {
     visualize(){
-        this.series = []
+        this.series[0].data = []
+        this.tooltip.pointFormat = '<tr><th colspan="2"><h3>{point.country}</h3></th></tr>' +
+                '<tr><th>' + this.tooltipgarbo.eig1 +':</th><td>{point.x}g</td></tr>' +
+                '<tr><th>' + this.tooltipgarbo.eig2 +':</th><td>{point.y}g</td></tr>' +
+                '<tr><th>' + this.tooltipgarbo.eig3 +':</th><td>{point.z}%</td></tr>'
         for(let i = 0; i < rows.length; i++){
 
           try{
-            this.series.push({
+            this.series[0].data.push({
               x: rows[i].x,
               y: rows[i].y,
               z: rows[i].z,
               name: rows[i].name,
-              country: rows[i].country,
+              country: rows[i].country
             })
 
           } catch (error) {
@@ -397,9 +385,7 @@ export default defineComponent({
         
         store.divName = this.divName;
 
-        store.chart = {
-            type: this.chart.type
-        }
+        store.chart = this.chart
 
         store.title = {
             text: this.title.text
@@ -437,9 +423,9 @@ export default defineComponent({
       categories: ref(null),
       xstyle: "",
       ystyle: "",
-      newx: "",
-      newy: "",
-      newz: "",
+      newx: 0,
+      newy: 0,
+      newz: 0,
       newCountry: "",
       options: [
         "dot", "line"

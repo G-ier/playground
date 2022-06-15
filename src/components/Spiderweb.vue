@@ -29,9 +29,7 @@ mounted(){
             x: this.store.title.x
         },
 
-        pane: {
-            size: this.store.pane.size
-        },
+        pane: this.store.pane,
 
         xAxis: {
             categories: this.store.xAxis.categories,
@@ -39,23 +37,11 @@ mounted(){
             lineWidth: this.store.xAxis.lineWidth
         },
 
-        yAxis: {
-            gridLineInterpolation: this.store.yAxis.gridLineInterpolation,
-            lineWidth: this.store.yAxis.lineWidth,
-            min: this.store.yAxis.min
-        },
+        yAxis: this.store.yAxis,
 
-        tooltip: {
-            shared: this.store.tooltip.shared,
-            pointFormat: this.store.tooltip.pointFormat
-        },
+        tooltip: this.store.tooltip,
 
-        legend: {
-            align: this.store.legend.align,
-            verticalAlign: this.store.legend.verticalAlign,
-            y: this.store.legend.y,
-            layout: this.store.legend.layout
-        },
+        legend: this.store.legend,
 
         series: this.store.series
 

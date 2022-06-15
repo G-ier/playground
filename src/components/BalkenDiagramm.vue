@@ -6,17 +6,25 @@
 import {useBalkenStore} from '../stores/balkenstore'
 import {mapWritableState, mapState } from 'pinia'
 import Vue from 'vue'
+import { useQuasar } from 'quasar'
 
 export default {
 
 setup(){
     const store = useBalkenStore()
+    const $q = useQuasar()
     return {
         store,
-        reload: store.reload
+        $q
     }
 },
 mounted(){
+
+    if(this.$q.localStorage.getItem("reloadBalken") == 0){
+        location.reload();
+        this.$q.localStorage.set("reloadBalken", 1)
+        this.$q.localStorage.set("reloadOther", 0)
+    }
     Highcharts.chart( String(this.store.divName), {
 
         chart: {
@@ -28,20 +36,11 @@ mounted(){
         xAxis: {
             categories: this.store.xAxis.categories
         },
-        yAxis: {
-            min: this.store.yAxis.min,
-            title: {
-                text: this.store.yAxis.title.text
-            }
-        },
+        yAxis: this.store.yAxis,
         legend: {
             reversed: this.store.legend
         },
-        plotOptions: {
-            series: {
-                stacking: this.store.plotOptions.series.stacking
-            }
-        },
+        plotOptions: this.store.plotOptions,
         
         series: this.store.series
 
