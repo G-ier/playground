@@ -7,7 +7,7 @@
           <router-link class="popreg text-white" :to="'/'" style="text-decoration: none;">Visualisierung Playground</router-link>
         </q-toolbar-title>
 
-        <q-btn size="sm" color="white" text-color="primary" class="q-mr-md popreg" label="Discord Chat" />
+        <q-btn size="sm" color="white" text-color="primary" class="q-mr-md popreg" label="Rocketchat Kanal" target="_blank" href="https://acis-chat.dbis.rwth-aachen.de/" />
         <q-btn size="sm" color="white" text-color="primary" class="popreg" label="Copy Discord Tag" @click="copy"/>
       </q-toolbar>
     </q-header>

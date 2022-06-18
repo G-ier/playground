@@ -48,7 +48,7 @@
                 <q-card-section>
                     <div class="row items-center no-wrap">
                     <div class="col">
-                        <div class="text-h6">Balkensäure Diagramme</div>
+                        <div class="text-h6">Blasendiagramme</div>
                     </div>
                     </div>
                 </q-card-section>
@@ -61,6 +61,71 @@
 
                 <q-card-actions class="row justify-end">
                     <q-btn no-caps flat class="rounded-borders" @click="goto('bubble')">Zu Playground</q-btn>
+                </q-card-actions>
+            </q-card>
+        </div>
+    </div>
+    <div class="container row q-mt-xl">
+        <div class="col">
+            <q-card flat bordered class="my-card bg-grey-1">
+                <q-card-section>
+                    <div class="row items-center no-wrap">
+                    <div class="col">
+                        <div class="text-h6">Simple Balkendiagramme</div>
+                    </div>
+                    </div>
+                </q-card-section>
+
+                <q-card-section>
+                    {{ lorem }}
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-actions class="row justify-end">
+                    <q-btn flat no-caps class="rounded-borders" @click="goto('simple-balken')">Zu Playground</q-btn>
+                </q-card-actions>
+            </q-card>
+        </div>
+        <div class="col q-mx-lg">
+            <q-card flat bordered class="my-card bg-grey-1">
+                <q-card-section>
+                    <div class="row items-center no-wrap">
+                    <div class="col">
+                        <div class="text-h6">Kuchendiagramm</div>
+                    </div>
+                    </div>
+                </q-card-section>
+
+                <q-card-section>
+                    {{ lorem }}
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-actions class="row justify-end">
+                    <q-btn no-caps flat class="rounded-borders" @click="goto('kuchen')">Zu Playground</q-btn>
+                </q-card-actions>
+            </q-card>
+        </div>
+        <div class="col">
+            <q-card flat bordered class="my-card bg-grey-1">
+                <q-card-section>
+                    <div class="row items-center no-wrap">
+                    <div class="col">
+                        <div class="text-h6">Liniendiagramme</div>
+                    </div>
+                    </div>
+                </q-card-section>
+
+                <q-card-section>
+                    {{ lorem }}
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-actions class="row justify-end">
+                    <q-btn no-caps flat class="rounded-borders" @click="goto('linien')">Zu Playground</q-btn>
                 </q-card-actions>
             </q-card>
         </div>
@@ -102,11 +167,13 @@ export default defineComponent({
 <style scoped>
 .main{
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 .container{
     width: 90vw;
-    height: 80vh;
+    
 }
 .page{
     border-radius: 20px;

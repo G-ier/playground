@@ -7,6 +7,9 @@ const routes = [
       { path: '', component: () => import('src/pages/IndexPage.vue') },
       { path: 'spiderweb', component: () => import('pages/Spider.vue') },
       { path: 'balken', component: () => import('pages/Balken.vue') },
+      { path: 'simple-balken', component: () => import('pages/SimpleBalken.vue') },
+      { path: 'kuchen', component: () => import('pages/Kuchen.vue') },
+      { path: 'linien', component: () => import('pages/Linien.vue') },
       { path: 'bubble', component: () => import('pages/Bubble.vue') }
     ]
   },
